@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+  bookstack:
+    build: .
+    ports:
+      - "8088:80"
+    volumes:
+      - /Users/davidgonzalez/container/html:/var/www/html/
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb
+    environment:
+       MYSQL_ROOT_PASSWORD: 'toor'
+       MYSQL_DATABASE: "bookstack"
+       MYSQL_USER: "root"
+       MYSQL_PASSWORD: "toor"
+    volumes:
+      - /Users/davidgonzalez/container/database:/var/lib/mysql
+      - /Users/davidgonzalez/container/import:/etc/import
+    ports:
+      - "9906:3306"
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
+  
